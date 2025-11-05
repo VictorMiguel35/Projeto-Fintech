@@ -2,6 +2,8 @@ package br.com.fiap.fintech.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -11,6 +13,15 @@ import java.time.LocalDate;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_transacao")
 @Table(name = "tb_fin_transacao")
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "tipo" // Nome do campo no JSON (ex: "R" ou "D")
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Receita.class, name = "R"),
+        @JsonSubTypes.Type(value = Despesa.class, name = "D")
+})
 public abstract class Transacao {
     @Id
     @GeneratedValue(
