@@ -41,13 +41,11 @@ public class UsuarioService {
         }
     }
 
-    public Usuario atualizar(Long id, Usuario usuario) {
-        Optional<Usuario> usuarioAtual = usuarioRepository.findById(id);
-        if (usuarioAtual.isPresent()) {
-            return usuarioRepository.save(usuario);
-        }else {
-            throw new RuntimeException("Usuário não encontrado!");
-        }
+    public Usuario atualizar(Long id, Usuario usuarioNovosDados) {
+        Usuario usuarioExistente = buscarPorId(id); // Reutiliza seu método que já lança exceção
+        usuarioExistente.setNomeUsuario(usuarioNovosDados.getNomeUsuario());
+        usuarioExistente.setEmailUsuario(usuarioNovosDados.getEmailUsuario());
+        return usuarioRepository.save(usuarioExistente);
     }
 
 

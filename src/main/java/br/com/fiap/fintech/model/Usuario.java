@@ -1,6 +1,9 @@
 package br.com.fiap.fintech.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "tb_fin_usuario")
@@ -20,6 +23,30 @@ public class Usuario {
 
     private String nomeUsuario;
     private String emailUsuario;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Carteira> carteiras;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transacao> transacoes;
+
+    public List<Carteira> getCarteiras() {
+        return carteiras;
+    }
+
+    public void setCarteiras(List<Carteira> carteiras) {
+        this.carteiras = carteiras;
+    }
+
+    public List<Transacao> getTransacoes() {
+        return transacoes;
+    }
+
+    public void setTransacoes(List<Transacao> transacoes) {
+        this.transacoes = transacoes;
+    }
 
     public Long getId() {
         return id;

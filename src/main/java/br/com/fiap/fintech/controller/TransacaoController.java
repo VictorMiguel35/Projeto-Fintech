@@ -7,17 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
+@RestController
+@RequestMapping("/api/transacoes")
 public class TransacaoController {
 
     @Autowired
     private TransacaoService transacaoService;
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Transacao salvar(@RequestBody Transacao transacao) {
-        return transacaoService.salvar(transacao);
-    }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -37,9 +34,10 @@ public class TransacaoController {
         transacaoService.excluir(id);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}/descricao")
     @ResponseStatus(HttpStatus.OK)
-    public Transacao atualizar(@PathVariable Long id, @RequestBody Transacao transacao) {
-        return  transacaoService.atualizar(id, transacao);
+    public Transacao atualizarDescricao(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        String novaDescricao = body.get("descricaoTransacao");
+        return transacaoService.atualizarDescricao(id, novaDescricao);
     }
 }

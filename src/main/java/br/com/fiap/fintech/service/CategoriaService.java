@@ -42,12 +42,9 @@ public class CategoriaService {
         }
     }
 
-    public Categoria atualizar(Long id, Categoria categoria) {
-        Optional<Categoria> categoriaAtual = categoriaRepository.findById(id);
-        if (categoriaAtual.isPresent()) {
-            return categoriaRepository.save(categoria);
-        }else {
-            throw new RuntimeException("Carteira não encontrada!");
-        }
+    public Categoria atualizar(Long id, Categoria categoriaNovosDados) {
+        Categoria categoriaExistente = buscarPorId(id);
+        categoriaExistente.setNome(categoriaNovosDados.getNome());
+        return categoriaRepository.save(categoriaExistente);
     }
 }

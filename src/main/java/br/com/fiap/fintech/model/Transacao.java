@@ -1,16 +1,21 @@
 package br.com.fiap.fintech.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_transacao")
 @Table(name = "tb_fin_transacao")
-public class Transacao {
+public abstract class Transacao {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "SEQ_TRASACOES"
+            generator = "SEQ_TRANSACOES"
     )
     @SequenceGenerator(
             name = "SEQ_TRANSACOES",
@@ -19,11 +24,58 @@ public class Transacao {
     )
     private Long id;
 
-    @Column(name = "dt_transacao")
+    @Column(name = "data_transacao")
     private LocalDate  dataTransacao;
 
-    private double valorTrasacao;
+    @Column(precision = 19, scale = 2, nullable = false)
+    private BigDecimal valorTransacao;
+
     private String descricaoTransacao;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_carteira", nullable = false)
+    private Carteira carteira;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
+
+    public BigDecimal getValorTransacao() {return valorTransacao; }
+    public void setValorTransacao(BigDecimal valorTransacao) {
+        this.valorTransacao = valorTransacao;
+    }
+
+    @JsonIgnore
+    public Usuario getUsuario() { return usuario; }
+
+    @JsonProperty
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    @JsonIgnore
+    public Carteira getCarteira() {
+        return carteira;
+    }
+
+    @JsonProperty
+    public void setCarteira(Carteira carteira) {
+        this.carteira = carteira;
+    }
+
+    @JsonIgnore
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    @JsonProperty
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
 
     public Long getId() {
         return id;
@@ -39,14 +91,6 @@ public class Transacao {
 
     public void setDataTransacao(LocalDate dataTransacao) {
         this.dataTransacao = dataTransacao;
-    }
-
-    public double getValorTrasacao() {
-        return valorTrasacao;
-    }
-
-    public void setValorTrasacao(double valorTrasacao) {
-        this.valorTrasacao = valorTrasacao;
     }
 
     public String getDescricaoTransacao() {
